@@ -109,7 +109,7 @@ int GrabCutClass::View(void)
             this->gp.DrawRect();    //必要に応じて四角を描画
         }
         imshow(winName, this->gp.view_image);   //表示
-        // 'Esc'が押されたら終了
+        // 'Esc'が押されたらGrabCutを実行して終了
         if (waitKey(10) == 27)
         {
             this->ExeGrabCut();
@@ -121,12 +121,17 @@ int GrabCutClass::View(void)
 
 int GrabCutClass::ExeGrabCut(void)
 {
-    //正しい矩形が選択されているか確認
+    //矩形チェック
     Rect r = this->gp.rect;
-    if (r.x < 0 || r.y < 0 || r.width <= 0 || r.height <= 0)
+    if (r.width < 0)
     {
-        cout << "GrabCutClass::ExeGrabCut ERROR : invalid rect size." << endl;
-        return -1;
+        r.x += r.width;
+        r.width *= -1;
+    }
+    if (r.height < 0)
+    {
+        r.y += r.height;
+        r.height *= -1;
     }
 
     //GrabCut実行
@@ -149,5 +154,4 @@ void GrabCutClass::Launch(string _src_fname, string _msk_fname)
 {
     //画像読み込み
     this->Read(_src_fname);
-
 }
